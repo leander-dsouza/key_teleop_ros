@@ -2,7 +2,7 @@
 ![ROS](https://img.shields.io/badge/-ROS-22314E?style=plastic&logo=ROS)
 ![Python](https://img.shields.io/badge/-Python-black?style=plastic&logo=Python)
 
-A ROS1 package to drive a robot around using arrow keys.
+A ROS2 package to drive a robot around using arrow keys.
 
 The following video is recorded with the [atreus](https://github.com/leander-dsouza/atreus) robot, embedding the key presses using [screenkey](https://www.thregr.org/wavexx/software/screenkey/).
 
@@ -10,13 +10,7 @@ https://github.com/leander-dsouza/key_teleop_ros/assets/45683974/e2bec100-d9aa-4
 
 ## Installation
 
-* Install python dependencies using pip3:
-
-	```bash
-	pip3 install -r requirements.txt
-	```
-
-* Finally, install all the dependencies using `rosdep`:
+* Install all the dependencies using `rosdep`:
 
 	```bash
 	rosdep install --from-paths $ROS_WS/src --ignore-src -r -y
@@ -25,7 +19,7 @@ https://github.com/leander-dsouza/key_teleop_ros/assets/45683974/e2bec100-d9aa-4
 * Build the workspace:
 
 	```bash
-	catkin build key_teleop_ros
+	colcon build --packages-select key_teleop_ros
 	```
 
 ## Usage
@@ -33,12 +27,12 @@ https://github.com/leander-dsouza/key_teleop_ros/assets/45683974/e2bec100-d9aa-4
 * After launching your robot, you can execute the following command to drive it around using the arrow keys:
 
     ```bash
-    rosrun key_teleop_ros key_drive.py
+    ros2 run key_teleop_ros key_drive
     ```
     Or you can execute the node using a launch file:
 
     ```bash
-    roslaunch key_teleop_ros key_drive.launch
+    ros2 launch key_teleop_ros key_drive.launch.py
     ```
 
 * The teleoperation node's parameters are as follows:
