@@ -1,5 +1,7 @@
 """Setup script for key_teleop_ros package."""
+
 from glob import glob
+
 from setuptools import find_packages, setup
 
 package_name = 'key_teleop_ros'
@@ -11,7 +13,6 @@ setup(
     data_files=[
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name + '/launch', glob('launch/*.py')),
-        ('resource/' + package_name, glob('resource/*'))
     ],
     install_requires=['setuptools'],
     zip_safe=True,
