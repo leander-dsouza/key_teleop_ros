@@ -12,28 +12,28 @@ https://github.com/leander-dsouza/key_teleop_ros/assets/45683974/e2bec100-d9aa-4
 
 * Install all the dependencies using `rosdep`:
 
-	```bash
-	rosdep install --from-paths $ROS_WS/src --ignore-src -r -y
-	```
+   ```bash
+   rosdep install --from-paths $ROS_WS/src --ignore-src -r -y
+   ```
 
 * Build the workspace:
 
-	```bash
-	colcon build --packages-select key_teleop_ros
-	```
+   ```bash
+   colcon build --packages-select key_teleop_ros
+   ```
 
 ## Usage
 
 * After launching your robot, you can execute the following command to drive it around using the arrow keys:
 
-    ```bash
-    ros2 run key_teleop_ros key_drive
-    ```
+   ```bash
+   ros2 run key_teleop_ros key_drive
+   ```
     Or you can execute the node using a launch file:
 
-    ```bash
-    ros2 launch key_teleop_ros key_drive.launch.py
-    ```
+   ```bash
+   ros2 launch key_teleop_ros key_drive.launch.py
+   ```
 
 * The teleoperation node's parameters are as follows:
     * `~update_rate` - The rate at which the node updates the robot's velocity. (default: 50 Hz)
