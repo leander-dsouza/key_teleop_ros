@@ -1,6 +1,9 @@
 name: Lint
 on:
   pull_request:
+  push:
+    branches:
+      - ros2
 
 jobs:
   ament_lint_general:
@@ -17,5 +20,5 @@ jobs:
     - uses: ros-tooling/action-ros-lint@v0.1
       with:
         linter: ${{ matrix.linter }}
-        distribution: rolling
+        distribution: jazzy
         package-name: "*"
