@@ -22,9 +22,11 @@
 
 """Teleoperation using arrow keys for ROS2."""
 
+from typing import Optional, Union
+
 from geometry_msgs.msg import Twist, Vector3
 from pynput import keyboard
-from pynput.keyboard import Key
+from pynput.keyboard import Key, KeyCode
 
 import rclpy
 from rclpy.node import Node
@@ -33,7 +35,7 @@ from rclpy.node import Node
 class KeyDrive(Node):
     """Class to teleoperate the robot using arrow keys."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the KeyDrive class."""
         super().__init__('key_teleop_node')
 
@@ -52,34 +54,35 @@ class KeyDrive(Node):
         self.linear_vel = self.get_parameter('linear_vel_start').value
         self.angular_vel = self.get_parameter('angular_vel_start').value
 
-        # Publisher
         self.pub = self.create_publisher(Twist, '/cmd_vel', 10)
-        # Timer
         self.create_timer(self.time_period, self.keyboard_update)
 
-    def forward(self):
+    def forward(self) -> None:
         """Move Forward."""
         self.pub.publish(Twist(linear=Vector3(x=self.linear_vel)))
 
-    def backward(self):
+    def backward(self) -> None:
         """Move Backward."""
         self.pub.publish(Twist(linear=Vector3(x=-self.linear_vel)))
 
-    def left(self):
+    def left(self) -> None:
         """Move Left."""
         self.pub.publish(Twist(angular=Vector3(z=self.angular_vel)))
 
-    def right(self):
+    def right(self) -> None:
         """Move Right."""
         self.pub.publish(Twist(angular=Vector3(z=-self.angular_vel)))
 
-    def brutestop(self):
+    def brutestop(self) -> None:
         """Stop the robot."""
         self.pub.publish(Twist())
 
-    def key_press(self, key):
+    def key_press(self, key: Optional[Union[Key, KeyCode]]) -> None:
         """Listen for key press."""
-        try:
+        if key is None:
+            return
+
+        if isinstance(key, Key):
             if key == Key.up:
                 self.forward()
             elif key == Key.down:
@@ -88,13 +91,16 @@ class KeyDrive(Node):
                 self.right()
             elif key == Key.left:
                 self.left()
-            elif key.char == 'w':
+
+        elif isinstance(key, KeyCode):
+            if key.char == 'w':
                 if self.linear_vel < self.max_linear_vel:
                     self.linear_vel += 0.1
                     self.linear_vel = round(self.linear_vel, 1)
                     self.get_logger().info(f'Linear Velocity: {self.linear_vel}')
                 else:
                     self.get_logger().info('Reached Max Linear Velocity')
+
             elif key.char == 's':
                 if self.linear_vel > 0.1:
                     self.linear_vel -= 0.1
@@ -102,6 +108,7 @@ class KeyDrive(Node):
                     self.get_logger().info(f'Linear Velocity: {self.linear_vel}')
                 else:
                     self.get_logger().info('Reached Minimal Linear Velocity')
+
             elif key.char == 'd':
                 if self.angular_vel < self.max_angular_vel:
                     self.angular_vel += 0.1
@@ -109,6 +116,7 @@ class KeyDrive(Node):
                     self.get_logger().info(f'Angular Velocity: {self.angular_vel}')
                 else:
                     self.get_logger().info('Reached Max Angular Velocity')
+
             elif key.char == 'a':
                 if self.angular_vel > 0.1:
                     self.angular_vel -= 0.1
@@ -116,29 +124,35 @@ class KeyDrive(Node):
                     self.get_logger().info(f'Angular Velocity: {self.angular_vel}')
                 else:
                     self.get_logger().info('Reached Minimal Angular Velocity')
+
             elif key.char == 'q':
                 self.get_logger().info('Shutting down...')
                 if rclpy.ok():
                     self.destroy_node()
                     rclpy.shutdown()
-                return False
 
-        except AttributeError:
-            pass
-        return False
-
-    def key_release(self, _):
+    def key_release(self, _: Optional[Union[Key, KeyCode]]) -> None:
         """Listen for key release."""
         self.brutestop()
-        return False
 
-    def keyboard_update(self):
+    def keyboard_update(self) -> None:
         """Keyboard Listener for a press and release event."""
-        with keyboard.Listener(on_press=self.key_press, on_release=self.key_release) as listener:
-            listener.join()
+        listener = None
+        try:
+            listener = keyboard.Listener(
+                on_press=self.key_press,
+                on_release=self.key_release)
+            listener.start()
+
+            while rclpy.ok() and listener.running:
+                rclpy.spin_once(self, timeout_sec=0.1)
+
+        finally:
+            if listener is not None:
+                listener.stop()
 
 
-def main(args=None):
+def main(args: Optional[list[str]] = None) -> None:
     """Initialize the ROS2 Node and KeyDrive class."""
     rclpy.init(args=args)
     node = KeyDrive()
