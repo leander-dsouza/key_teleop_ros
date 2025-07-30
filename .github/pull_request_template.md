@@ -1,32 +1,13 @@
-## Status
-**READY/IN DEVELOPMENT/HOLD**
+## Description of contribution in a few bullet points
 
-## Migrations
-YES | NO
+<!--
+* I added this neat new feature
+-->
 
-## Description
-A few sentences describing the overall goals of the pull request's commits.
+## Description of how this change was tested
 
+<!--
+* I wrote unit tests for my new feature
+-->
 
-## Todos
-- [ ] Tests
-- [ ] Documentation
-
-
-## Deploy Notes
-Notes regarding deployment the contained body of work.  These should note any
-db migrations, etc.
-
-## Steps to Test or Reproduce
-Outline the steps to test or reproduce the PR here.
-
-```sh
-git pull --contributing
-git checkout <feature_branch>
-bundle; script/server
-```
-
-## Impacted Areas in Application
-List general components of the application that this PR will affect:
-
-*
+---
